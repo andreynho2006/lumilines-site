@@ -33,7 +33,7 @@
     -webkit-font-smoothing: antialiased; overflow-x: hidden;
   }
   a { color: inherit; }
-  img, video, svg { display: block; max-width: 100%; }
+  img, video, svg { display: block; max-width: 100%; height: auto; }
   .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
   .muted { color: var(--muted); }
 
@@ -170,7 +170,6 @@
     .step svg { width: 96px; height: 96px; margin: 0; }
     section { padding: 64px 0; }
     #details .media { order: -1; }
-    .shot { width: min(250px, 70vw); }
     .phone { width: min(290px, 74vw); }
     footer .copy { margin-left: 0; width: 100%; }
   }
@@ -292,8 +291,8 @@
         </div>
       </div>
       <div class="media">
-        <img class="shot" src="media/home.jpg" width="600" height="1300" loading="lazy"
-             alt="The Lumilines home screen on Sunday: a week strip from Monday to Sunday, then today's Easy 6 by 6, Medium 7 by 7 and Sunday Grand 8 by 8 boards.">
+        <div class="phone"><img src="media/home.jpg" width="600" height="1300" loading="lazy"
+             alt="The Lumilines home screen on Sunday: a week strip from Monday to Sunday, then today's Easy 6 by 6, Medium 7 by 7 and Sunday Grand 8 by 8 boards."></div>
       </div>
     </div>
   </section>
