@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lumilines: a daily line puzzle for iPhone</title>
-<meta name="description" content="Three new puzzles every day. Connect the colors, fill every cell. Free daily puzzles, no ads, no account.">
+<meta name="description" content="Three new puzzles every day. Connect the colors, fill every cell. Walls from Thursday, the Sunday Grand, and a 9×9 Expert room for Plus. Free daily puzzles, no ads, no account.">
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
 <link rel="canonical" href="https://lumilines.app/">
@@ -18,12 +18,11 @@
 <meta name="twitter:card" content="summary_large_image">
 <style>
   :root {
-    --bg: #000; --surface: #0d0d0f; --line: #1d1d21;
-    --text: #f2f2f4; --muted: #9a9aa3;
-    --cyan: #3cdfff; --amber: #ffc23d; --rose: #ff4f8b; --lime: #a6ee45;
-    --orange: #ff7a3d; --violet: #a586ff; --mint: #3de0a8; --blue: #4c8bff;
-    --radius: 22px;
-    --cta: "TestFlight";
+    --bg: #000; --surface: #0c0c0f; --surface-2: #121216; --line: #1e1e24;
+    --text: #f4f4f6; --muted: #9a9aa3; --soft: #c6c6cd;
+    --cyan: #3fe0ff; --amber: #ffc23d; --rose: #ff4f8b; --lime: #a6f04a;
+    --orange: #ff7a45; --violet: #9b7bff; --mint: #3de6b0; --blue: #4c8dff;
+    --radius: 24px;
   }
   * { box-sizing: border-box; }
   html { background: var(--bg); -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
@@ -34,73 +33,111 @@
   }
   a { color: inherit; }
   img, video, svg { display: block; max-width: 100%; height: auto; }
-  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
   .muted { color: var(--muted); }
+  :focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; border-radius: 6px; }
+
+  /* Spectrum: the eight line colors as one thin band */
+  .spectrum { height: 3px; background: linear-gradient(90deg, var(--rose), var(--cyan), var(--amber), var(--lime), var(--violet), var(--orange), var(--blue), var(--mint)); }
 
   /* Header */
-  header { position: sticky; top: 0; z-index: 10; background: rgba(0,0,0,.72);
+  header { position: sticky; top: 0; z-index: 10; background: rgba(0,0,0,.66);
            -webkit-backdrop-filter: saturate(160%) blur(18px); backdrop-filter: saturate(160%) blur(18px);
            border-bottom: 1px solid rgba(255,255,255,.06); }
-  header .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; height: 62px; }
   .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -.01em; text-decoration: none; }
   .brand img { width: 30px; height: 30px; border-radius: 8px; }
-  .pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px;
-          background: var(--cyan); color: #00151b; font-weight: 650; font-size: 15px; text-decoration: none; }
+  nav { display: flex; gap: 22px; font-size: 15px; color: var(--muted); }
+  nav a { text-decoration: none; }
+  nav a:hover { color: var(--text); }
+  .pill { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px;
+          background: var(--cyan); color: #00151b; font-weight: 650; font-size: 15px; text-decoration: none; white-space: nowrap; }
   .pill:hover { filter: brightness(1.08); }
 
   /* Buttons */
   .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-         min-height: 56px; padding: 0 28px; border-radius: 16px; font-weight: 700; font-size: 18px;
+         min-height: 58px; padding: 0 30px; border-radius: 18px; font-weight: 700; font-size: 18px;
          text-decoration: none; background: var(--cyan); color: #00151b;
-         box-shadow: 0 0 0 1px rgba(60,223,255,.4), 0 10px 40px -10px rgba(60,223,255,.55);
-         transition: transform .15s ease, filter .15s ease; }
-  .btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
+         box-shadow: 0 0 0 1px rgba(63,224,255,.45), 0 14px 50px -12px rgba(63,224,255,.7);
+         transition: transform .15s ease, filter .15s ease, box-shadow .15s ease; }
+  .btn:hover { filter: brightness(1.06); transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(63,224,255,.6), 0 18px 60px -12px rgba(63,224,255,.85); }
   .btn:active { transform: translateY(1px); }
   .btn svg { width: 20px; height: 20px; }
-  :focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; border-radius: 6px; }
+  .btn.ghost { background: transparent; color: var(--text); box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); }
+  .btn.ghost:hover { box-shadow: inset 0 0 0 1px rgba(255,255,255,.35); }
 
   /* Hero */
-  .hero { position: relative; padding: 56px 0 72px; }
-  .hero::before { content: ""; position: absolute; inset: -20% -10% auto; height: 120%; z-index: -1; pointer-events: none;
-    background: radial-gradient(40% 35% at 72% 40%, rgba(60,223,255,.13), transparent 70%),
-                radial-gradient(30% 30% at 62% 70%, rgba(255,79,139,.10), transparent 70%); }
-  .hero .wrap { display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; }
+  .hero { position: relative; padding: 72px 0 96px; overflow: hidden; isolation: isolate; }
+  .hero-board { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; opacity: .9; pointer-events: none; }
+  .hero-board .g { stroke: rgba(255,255,255,.055); stroke-width: 1; }
+  .hero-board .f { fill: none; stroke-width: 12; stroke-linecap: round; stroke-linejoin: round; opacity: 0;
+                   stroke-dasharray: 1; stroke-dashoffset: 1; filter: drop-shadow(0 0 10px currentColor);
+                   animation: flow 14s cubic-bezier(.55,0,.2,1) infinite; }
+  .hero-board .f.d1 { animation-delay: -1s; }  .hero-board .f.d2 { animation-delay: -3.5s; }
+  .hero-board .f.d3 { animation-delay: -6s; }  .hero-board .f.d4 { animation-delay: -8.5s; }
+  .hero-board .f.d5 { animation-delay: -11s; } .hero-board .f.d6 { animation-delay: -12.5s; }
+  @keyframes flow {
+    0%   { stroke-dashoffset: 1; opacity: 0; }
+    6%   { opacity: .9; }
+    42%  { stroke-dashoffset: 0; opacity: .9; }
+    70%  { stroke-dashoffset: 0; opacity: .9; }
+    84%  { opacity: 0; }
+    100% { stroke-dashoffset: 1; opacity: 0; }
+  }
+  .hero::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background: radial-gradient(60% 50% at 70% 45%, rgba(63,224,255,.16), transparent 70%),
+                radial-gradient(45% 40% at 30% 80%, rgba(255,79,139,.12), transparent 70%),
+                linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.2) 60%, #000 100%); }
+  .hero .wrap { display: grid; grid-template-columns: 1.1fr .9fr; gap: 56px; align-items: center; }
   .eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600;
-             letter-spacing: .02em; color: var(--muted); margin: 0 0 18px; }
+             letter-spacing: .02em; color: var(--soft); margin: 0 0 20px; padding: 8px 14px 8px 10px;
+             border: 1px solid rgba(255,255,255,.12); border-radius: 999px; background: rgba(255,255,255,.04); }
   .dots { display: inline-flex; gap: 5px; }
-  .dots i { width: 8px; height: 8px; border-radius: 50%; display: block; }
-  h1 { font-size: clamp(42px, 6.4vw, 76px); line-height: 1.02; letter-spacing: -.035em; margin: 0 0 20px; font-weight: 800; }
-  h1 .c1 { color: var(--cyan); } h1 .c2 { color: var(--rose); }
-  .lede { font-size: clamp(18px, 2vw, 21px); color: #c9c9cf; max-width: 34ch; margin: 0 0 30px; }
-  .facts { list-style: none; padding: 0; margin: 18px 0 0; display: flex; flex-wrap: wrap; gap: 8px 18px;
+  .dots i { width: 8px; height: 8px; border-radius: 50%; display: block; box-shadow: 0 0 8px currentColor; }
+  h1 { font-size: clamp(44px, 6.8vw, 84px); line-height: 1; letter-spacing: -.04em; margin: 0 0 22px; font-weight: 800; }
+  h1 .c1 { color: var(--cyan); text-shadow: 0 0 28px rgba(63,224,255,.55); }
+  h1 .c2 { color: var(--rose); text-shadow: 0 0 28px rgba(255,79,139,.5); }
+  .lede { font-size: clamp(18px, 2vw, 22px); color: var(--soft); max-width: 36ch; margin: 0 0 32px; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+  .facts { list-style: none; padding: 0; margin: 26px 0 0; display: flex; flex-wrap: wrap; gap: 8px 18px;
            font-size: 15px; color: var(--muted); }
   .facts li { display: flex; align-items: center; gap: 7px; }
-  .facts li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--lime); }
+  .facts li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 8px var(--lime); }
 
-  .phone { position: relative; width: min(320px, 78vw); margin: 0 auto; aspect-ratio: 480 / 1044;
-           border-radius: 46px; padding: 10px; background: linear-gradient(160deg, #2a2a30, #0b0b0d 40%, #1c1c20);
-           box-shadow: 0 0 0 1px #2f2f35, 0 40px 120px -30px rgba(60,223,255,.35), 0 30px 80px -20px rgba(0,0,0,.9); }
-  .phone video, .phone img { width: 100%; height: 100%; object-fit: cover; border-radius: 37px; background: #000; }
+  .phone { position: relative; width: min(330px, 78vw); margin: 0 auto; aspect-ratio: 480 / 1044;
+           border-radius: 48px; padding: 10px; background: linear-gradient(160deg, #2c2c33, #0b0b0d 40%, #1d1d22);
+           box-shadow: 0 0 0 1px #30303a, 0 60px 140px -30px rgba(63,224,255,.4), 0 40px 90px -20px rgba(0,0,0,.95); }
+  .phone video, .phone img { width: 100%; height: 100%; object-fit: cover; border-radius: 38px; background: #000; }
+  .hero .phone { animation: hover 7s ease-in-out infinite; }
+  @keyframes hover { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
   .vtoggle { position: absolute; right: -6px; bottom: 26px; width: 40px; height: 40px; border-radius: 50%;
              border: 1px solid #2f2f35; background: rgba(20,20,24,.9); color: var(--text); cursor: pointer;
              display: grid; place-items: center; }
   .vtoggle svg { width: 16px; height: 16px; }
 
   /* Sections */
-  section { padding: 88px 0; border-top: 1px solid var(--line); }
-  .kicker { font-size: 14px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 12px; }
-  h2 { font-size: clamp(32px, 4.4vw, 52px); line-height: 1.06; letter-spacing: -.03em; margin: 0 0 16px; font-weight: 800; }
-  .sub { color: #c2c2c9; font-size: 19px; max-width: 46ch; margin: 0; }
+  section { padding: 96px 0; border-top: 1px solid var(--line); position: relative; }
+  .kicker { font-size: 14px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; margin: 0 0 12px; }
+  h2 { font-size: clamp(34px, 4.6vw, 56px); line-height: 1.04; letter-spacing: -.035em; margin: 0 0 16px; font-weight: 800; }
+  .sub { color: var(--soft); font-size: 19px; max-width: 48ch; margin: 0; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+
+  /* Scroll reveal */
+  .reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+  .reveal.in { opacity: 1; transform: none; }
+  .reveal.d1 { transition-delay: .1s; } .reveal.d2 { transition-delay: .2s; } .reveal.d3 { transition-delay: .3s; }
 
   /* How it plays */
-  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 44px; }
-  .step { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; }
-  .step svg { width: 132px; height: 132px; margin-bottom: 22px; }
-  .step h3 { font-size: 20px; margin: 0 0 6px; letter-spacing: -.01em; }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 48px; }
+  .step { padding: 28px; transition: transform .25s ease, border-color .25s ease, opacity .7s ease; }
+  .step:hover { transform: translateY(-4px); border-color: #2c2c34; }
+  .step svg { width: 140px; height: 140px; margin-bottom: 22px; }
+  .step h3 { font-size: 21px; margin: 0 0 6px; letter-spacing: -.01em; }
   .step p { margin: 0; color: var(--muted); }
   .grid-lines { stroke: #26262c; stroke-width: 1; }
   .path { fill: none; stroke-width: 11; stroke-linecap: round; stroke-linejoin: round; }
   .glow { filter: drop-shadow(0 0 6px currentColor); }
+  .wall { stroke: #e4e4ea; stroke-width: 4; stroke-linecap: square; }
   .draw .path { stroke-dasharray: 300; stroke-dashoffset: 300; }
   .draw.in .path { animation: draw 1.4s cubic-bezier(.6,0,.2,1) forwards; }
   .draw.in .path:nth-of-type(3) { animation-delay: .35s; }
@@ -108,23 +145,60 @@
   @keyframes draw { to { stroke-dashoffset: 0; } }
 
   /* Week */
-  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
   .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 36px; }
-  .day { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 4px;
-         text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .day { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 12px 4px 10px;
+         text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; min-height: 124px; }
   .day b { font-size: 13px; color: var(--muted); font-weight: 600; }
   .day .sq { display: flex; flex-direction: column; gap: 4px; align-items: center; }
   .day .sq i { display: block; border-radius: 3px; }
-  .day.sun { border-color: rgba(255,79,139,.55); box-shadow: 0 0 24px -6px rgba(255,79,139,.5); }
-  .day.sun b { color: var(--rose); }
+  .day .w { margin-top: auto; height: 14px; display: flex; align-items: center; justify-content: center; }
+  .day .w i { display: block; width: 18px; height: 3px; background: #e4e4ea; position: relative; border-radius: 1px; }
+  .day .w i::before, .day .w i::after { content: ""; position: absolute; top: -2px; width: 4px; height: 7px; background: #e4e4ea; border-radius: 1px; }
+  .day .w i::before { left: -1px; } .day .w i::after { right: -1px; }
+  .day .tag { font-size: 10px; font-weight: 700; letter-spacing: .04em; }
+  .day.sat { border-color: rgba(255,194,61,.45); }
+  .day.sat .tag { color: var(--amber); }
+  .day.sun { border-color: rgba(255,79,139,.6); box-shadow: 0 0 28px -6px rgba(255,79,139,.55); }
+  .day.sun b, .day.sun .tag { color: var(--rose); }
   .legend { display: flex; gap: 16px; margin-top: 16px; font-size: 14px; color: var(--muted); flex-wrap: wrap; }
   .legend span { display: inline-flex; align-items: center; gap: 6px; }
   .legend i { width: 10px; height: 10px; border-radius: 3px; display: block; }
-  .shot { width: min(340px, 100%); margin: 0 auto; border-radius: 36px; border: 1px solid #222; overflow: hidden;
-          box-shadow: 0 30px 90px -30px rgba(255,194,61,.25); }
+  .legend .wi { width: 14px; height: 3px; border-radius: 1px; background: #e4e4ea; }
+
+  /* Endless rooms */
+  .rooms { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 48px; }
+  .room { padding: 26px; position: relative; overflow: hidden; }
+  .room svg { width: 100%; height: auto; margin-bottom: 20px; border-radius: 14px; }
+  .room h3 { margin: 0 0 6px; font-size: 21px; display: flex; align-items: center; gap: 10px; }
+  .room p { margin: 0; color: var(--muted); }
+  .badge { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; }
+  .badge.plus { background: rgba(255,194,61,.16); color: var(--amber); }
+  .badge.free { background: rgba(166,240,74,.14); color: var(--lime); }
+  .room.expert { border-color: rgba(155,123,255,.5); box-shadow: 0 30px 80px -40px rgba(155,123,255,.6); }
+
+  /* Plus */
+  #plus::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background: radial-gradient(50% 40% at 25% 40%, rgba(155,123,255,.12), transparent 70%),
+                radial-gradient(40% 35% at 80% 70%, rgba(255,194,61,.1), transparent 70%); }
+  .plus-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 56px; align-items: start; margin-top: 48px; }
+  .plus-grid .phone { position: sticky; top: 90px; box-shadow: 0 0 0 1px #30303a, 0 60px 140px -30px rgba(155,123,255,.5), 0 40px 90px -20px rgba(0,0,0,.95); }
+  .perks { display: grid; gap: 16px; }
+  .perk { padding: 24px 26px; display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: start; }
+  .perk .ico { width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; font-size: 20px; }
+  .perk h3 { margin: 0 0 4px; font-size: 20px; letter-spacing: -.01em; }
+  .perk p { margin: 0; color: var(--muted); }
+  .perk.wide { grid-template-columns: 1fr; }
+  .perk .head { display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: start; }
+  .insights { margin-top: 18px; border-radius: 16px; background: #000; border: 1px solid var(--line); padding: 14px; }
+  .insights svg { width: 100%; height: auto; }
+  .swatches { display: grid; gap: 10px; margin-top: 14px; }
+  .swatch { display: grid; grid-template-columns: 84px 1fr; gap: 12px; align-items: center; font-size: 14px; color: var(--muted); }
+  .swatch span { display: flex; gap: 4px; }
+  .swatch span i { flex: 1; height: 16px; border-radius: 4px; display: block; }
 
   /* Details */
-  .board { border-radius: 28px; overflow: hidden; border: 1px solid #222; box-shadow: 0 30px 120px -40px rgba(166,238,69,.35); }
+  .board { border-radius: 28px; overflow: hidden; border: 1px solid #222; box-shadow: 0 40px 120px -40px rgba(166,240,74,.4); }
   .features { list-style: none; padding: 0; margin: 32px 0 0; display: grid; gap: 14px; }
   .features li { display: grid; grid-template-columns: 28px 1fr; gap: 12px; align-items: start; }
   .features li strong { display: block; }
@@ -132,15 +206,20 @@
   .ico { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; font-size: 14px; }
 
   /* Pricing */
-  .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 44px; }
-  .plan { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 30px; }
-  .plan.plus { border-color: rgba(255,194,61,.45); }
-  .plan h3 { margin: 0 0 4px; font-size: 22px; }
-  .price { font-size: 34px; font-weight: 800; letter-spacing: -.02em; margin: 10px 0 4px; }
+  .plans { display: grid; grid-template-columns: 1fr 1.15fr; gap: 18px; margin-top: 48px; align-items: start; }
+  .plan { padding: 32px; }
+  .plan.plus { position: relative; border: 1px solid transparent; border-radius: var(--radius);
+               background: linear-gradient(var(--surface), var(--surface)) padding-box,
+                           linear-gradient(135deg, rgba(255,194,61,.9), rgba(155,123,255,.6), rgba(63,224,255,.6)) border-box;
+               box-shadow: 0 40px 100px -40px rgba(255,194,61,.45); }
+  .plan h3 { margin: 0 0 4px; font-size: 22px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .price { font-size: 38px; font-weight: 800; letter-spacing: -.02em; margin: 10px 0 2px; }
   .price small { font-size: 16px; font-weight: 500; color: var(--muted); }
-  .plan ul { padding-left: 1.1em; margin: 18px 0 0; color: #d6d6dc; }
-  .plan li { margin: 6px 0; }
-  .fine { font-size: 14px; color: var(--muted); margin-top: 16px; }
+  .plan ul { list-style: none; padding: 0; margin: 20px 0 0; color: #dcdce2; display: grid; gap: 10px; }
+  .plan li { display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: start; }
+  .plan li::before { content: "✓"; color: var(--lime); font-weight: 700; }
+  .plan.plus li::before { color: var(--amber); }
+  .fine { font-size: 14px; color: var(--muted); margin-top: 18px; }
 
   /* FAQ */
   details { border-bottom: 1px solid var(--line); padding: 18px 0; }
@@ -149,12 +228,14 @@
   summary::-webkit-details-marker { display: none; }
   summary::after { content: "+"; color: var(--muted); font-weight: 400; font-size: 22px; line-height: 1; }
   details[open] summary::after { content: "–"; }
-  details p { color: #c2c2c9; margin: 10px 0 0; max-width: 62ch; }
+  details p { color: var(--soft); margin: 10px 0 0; max-width: 62ch; }
 
   /* Final CTA */
-  .final { text-align: center; padding: 110px 0; }
-  .final h2 { margin-left: auto; margin-right: auto; max-width: 16ch; }
-  .final .sub { margin: 0 auto 30px; }
+  .final { text-align: center; padding: 130px 0; overflow: hidden; }
+  .final::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background: radial-gradient(50% 60% at 50% 100%, rgba(63,224,255,.16), transparent 70%); }
+  .final h2 { margin-left: auto; margin-right: auto; max-width: 18ch; }
+  .final .sub { margin: 0 auto 32px; }
 
   footer { border-top: 1px solid var(--line); padding: 30px 0 48px; font-size: 15px; color: var(--muted); }
   footer .wrap { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: center; }
@@ -162,13 +243,20 @@
   footer a:hover { text-decoration: underline; }
   footer .copy { margin-left: auto; }
 
+  @media (max-width: 960px) {
+    nav { display: none; }
+    .plus-grid { grid-template-columns: 1fr; }
+    .plus-grid .phone { position: static; }
+    .plans { grid-template-columns: 1fr; }
+  }
   @media (max-width: 860px) {
-    .hero { padding: 32px 0 56px; }
+    .hero { padding: 40px 0 64px; }
+    .hero-board { opacity: .45; }
     .hero .wrap, .split { grid-template-columns: 1fr; gap: 40px; }
-    .steps, .plans { grid-template-columns: 1fr; }
+    .steps, .rooms { grid-template-columns: 1fr; }
     .step { display: grid; grid-template-columns: 96px 1fr; gap: 18px; align-items: center; padding: 20px; }
     .step svg { width: 96px; height: 96px; margin: 0; }
-    section { padding: 64px 0; }
+    section { padding: 68px 0; }
     #details .media { order: -1; }
     .phone { width: min(290px, 74vw); }
     footer .copy { margin-left: 0; width: 100%; }
@@ -176,12 +264,16 @@
   @media (max-width: 420px) {
     .btn { width: 100%; }
     .week { gap: 5px; }
-    .day { padding: 10px 2px; }
+    .day { padding: 10px 2px 8px; min-height: 108px; }
+    .perk, .perk .head { grid-template-columns: 1fr; }
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .draw .path { stroke-dasharray: none; stroke-dashoffset: 0; animation: none !important; }
-    .btn { transition: none; }
+    .hero-board .f { animation: none; opacity: .7; stroke-dashoffset: 0; }
+    .hero .phone { animation: none; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .btn, .step { transition: none; }
   }
 </style>
 </head>
@@ -190,27 +282,61 @@
 <!-- The beta link lives in every a.cta. At launch, swap these hrefs for the App Store URL
      and the label for "Download on the App Store". -->
 
+<div class="spectrum" aria-hidden="true"></div>
 <header>
   <div class="wrap">
     <a class="brand" href="#top" aria-label="Lumilines home"><img src="icon.png" alt="" width="30" height="30">Lumilines</a>
+    <nav aria-label="Sections">
+      <a href="#how">How it plays</a>
+      <a href="#week">The week</a>
+      <a href="#endless">Endless</a>
+      <a href="#plus">Plus</a>
+      <a href="#pricing">Pricing</a>
+    </nav>
     <a class="pill cta" href="https://testflight.apple.com/join/K3zaFQHC">Join the beta</a>
   </div>
 </header>
 
 <main id="top">
   <div class="hero">
+    <!-- A board that keeps solving itself behind the headline. -->
+    <svg class="hero-board" viewBox="0 0 1400 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <pattern id="cells" width="56" height="56" patternUnits="userSpaceOnUse">
+          <path class="g" d="M56 0H0V56" fill="none"/>
+        </pattern>
+      </defs>
+      <rect width="1400" height="760" fill="url(#cells)"/>
+      <path class="f d1" pathLength="1" style="color:var(--cyan)" stroke="currentColor" d="M84 84V308H308V196H532"/>
+      <path class="f d2" pathLength="1" style="color:var(--rose)" stroke="currentColor" d="M1316 140H1092V364H868V532"/>
+      <path class="f d3" pathLength="1" style="color:var(--amber)" stroke="currentColor" d="M196 644H420V476H644V644H812"/>
+      <path class="f d4" pathLength="1" style="color:var(--lime)" stroke="currentColor" d="M1036 700V588H1260V420"/>
+      <path class="f d5" pathLength="1" style="color:var(--violet)" stroke="currentColor" d="M700 84H924V252H1148"/>
+      <path class="f d6" pathLength="1" style="color:var(--mint)" stroke="currentColor" d="M28 476H140V588H28"/>
+      <g fill="currentColor">
+        <circle cx="84" cy="84" r="11" style="color:var(--cyan)"/><circle cx="532" cy="196" r="11" style="color:var(--cyan)"/>
+        <circle cx="1316" cy="140" r="11" style="color:var(--rose)"/><circle cx="868" cy="532" r="11" style="color:var(--rose)"/>
+        <circle cx="196" cy="644" r="11" style="color:var(--amber)"/><circle cx="812" cy="644" r="11" style="color:var(--amber)"/>
+        <circle cx="1036" cy="700" r="11" style="color:var(--lime)"/><circle cx="1260" cy="420" r="11" style="color:var(--lime)"/>
+        <circle cx="700" cy="84" r="11" style="color:var(--violet)"/><circle cx="1148" cy="252" r="11" style="color:var(--violet)"/>
+        <circle cx="28" cy="476" r="11" style="color:var(--mint)"/><circle cx="28" cy="588" r="11" style="color:var(--mint)"/>
+      </g>
+    </svg>
     <div class="wrap">
       <div>
         <p class="eyebrow">
-          <span class="dots" aria-hidden="true"><i style="background:var(--cyan)"></i><i style="background:var(--amber)"></i><i style="background:var(--rose)"></i></span>
+          <span class="dots" aria-hidden="true"><i style="background:var(--cyan);color:var(--cyan)"></i><i style="background:var(--amber);color:var(--amber)"></i><i style="background:var(--rose);color:var(--rose)"></i></span>
           A daily line puzzle for iPhone
         </p>
         <h1><span class="c1">Connect the colors.</span><br><span class="c2">Fill every cell.</span></h1>
-        <p class="lede">Three new puzzles every day, from Easy to Hard. The boards grow through the week, up to the Sunday Grand.</p>
-        <a class="btn cta" href="https://testflight.apple.com/join/K3zaFQHC">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M5 20h14"/></svg>
-          Join the beta on TestFlight
-        </a>
+        <p class="lede">Three new puzzles every day, Easy to Hard. The boards grow through the week, walls arrive on Thursday, and Sunday brings the Grand.</p>
+        <div class="ctas">
+          <a class="btn cta" href="https://testflight.apple.com/join/K3zaFQHC">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M5 20h14"/></svg>
+            Join the beta on TestFlight
+          </a>
+          <a class="btn ghost" href="#how">See how it plays</a>
+        </div>
         <ul class="facts">
           <li>Free daily puzzles</li>
           <li>No ads</li>
@@ -230,11 +356,11 @@
 
   <section id="how">
     <div class="wrap">
-      <p class="kicker" style="color:var(--cyan)">How it plays</p>
-      <h2>One rule. Lots to think about.</h2>
-      <p class="sub">You learn it in ten seconds. The bigger boards take a little longer.</p>
+      <p class="kicker reveal" style="color:var(--cyan)">How it plays</p>
+      <h2 class="reveal">One rule. Lots to think about.</h2>
+      <p class="sub reveal d1">You learn it in ten seconds. The bigger boards take a little longer.</p>
       <div class="steps">
-        <div class="step">
+        <div class="step card reveal">
           <svg class="draw" viewBox="0 0 96 96" aria-hidden="true">
             <path class="grid-lines" d="M0 .5H96M0 24H96M0 48H96M0 72H96M0 95.5H96M.5 0V96M24 0V96M48 0V96M72 0V96M95.5 0V96"/>
             <path class="path glow" style="color:var(--cyan)" stroke="currentColor" d="M12 12V60H84"/>
@@ -242,7 +368,7 @@
           </svg>
           <div><h3>Draw a line</h3><p>Drag from a dot to its matching dot.</p></div>
         </div>
-        <div class="step">
+        <div class="step card reveal d1">
           <svg class="draw" viewBox="0 0 96 96" aria-hidden="true">
             <path class="grid-lines" d="M0 .5H96M0 24H96M0 48H96M0 72H96M0 95.5H96M.5 0V96M24 0V96M48 0V96M72 0V96M95.5 0V96"/>
             <path class="path glow" style="color:var(--amber)" stroke="currentColor" d="M12 12H60V36H84"/>
@@ -250,9 +376,9 @@
             <circle cx="12" cy="12" r="8" fill="var(--amber)"/><circle cx="84" cy="36" r="8" fill="var(--amber)"/>
             <circle cx="12" cy="84" r="8" fill="var(--rose)"/><circle cx="84" cy="84" r="8" fill="var(--rose)"/>
           </svg>
-          <div><h3>Never cross</h3><p>Lines can bend as much as you like, but they can't cross.</p></div>
+          <div><h3>Never cross</h3><p>Lines can bend as much as you like, but they can't cross. From Thursday, walls block some edges too.</p></div>
         </div>
-        <div class="step">
+        <div class="step card reveal d2">
           <svg class="draw" viewBox="0 0 96 96" aria-hidden="true">
             <path class="grid-lines" d="M0 .5H96M0 24H96M0 48H96M0 72H96M0 95.5H96M.5 0V96M24 0V96M48 0V96M72 0V96M95.5 0V96"/>
             <path class="path glow" style="color:var(--cyan)" stroke="currentColor" d="M12 12H84V36"/>
@@ -271,47 +397,186 @@
   <section id="week">
     <div class="wrap split">
       <div>
-        <p class="kicker" style="color:var(--amber)">A daily habit</p>
-        <h2>Small on Monday. Grand on Sunday.</h2>
-        <p class="sub">Every day brings an Easy, a Medium and a Hard board. They start small on Monday and grow through the week. Sunday's Hard is the Grand.</p>
-        <div class="week" role="img" aria-label="Board sizes by day. Monday 5, 6 and 7 cells wide. Tuesday 5, 6 and 8. Wednesday 5, 7 and 8. Thursday to Sunday 6, 7 and 8.">
+        <p class="kicker reveal" style="color:var(--amber)">A daily habit</p>
+        <h2 class="reveal">Small on Monday. Walls by Thursday. Grand on Sunday.</h2>
+        <p class="sub reveal d1">Every day brings an Easy, a Medium and a Hard board. They grow until Thursday, then walls take over and thicken all the way to the Sunday Grand, the most intricate board of the week.</p>
+        <div class="week reveal d2" role="img" aria-label="The week in Lumilines. Monday: boards 5, 6 and 7 cells wide. Tuesday: 5, 6 and 8. Wednesday: 5, 7 and 8. Thursday to Sunday: 6, 7 and 8, with walls on the Medium and Hard boards. Saturday adds the Saturday Extra for Plus. Sunday's Hard is the Sunday Grand.">
           <!-- sizes from Lumilines docs/generator.md weekly table -->
           <div class="day"><b>M</b><span class="sq"><i style="width:10px;height:10px;background:var(--cyan)"></i><i style="width:12px;height:12px;background:var(--amber)"></i><i style="width:14px;height:14px;background:var(--rose)"></i></span></div>
           <div class="day"><b>T</b><span class="sq"><i style="width:10px;height:10px;background:var(--cyan)"></i><i style="width:12px;height:12px;background:var(--amber)"></i><i style="width:16px;height:16px;background:var(--rose)"></i></span></div>
           <div class="day"><b>W</b><span class="sq"><i style="width:10px;height:10px;background:var(--cyan)"></i><i style="width:14px;height:14px;background:var(--amber)"></i><i style="width:16px;height:16px;background:var(--rose)"></i></span></div>
-          <div class="day"><b>T</b><span class="sq"><i style="width:12px;height:12px;background:var(--cyan)"></i><i style="width:14px;height:14px;background:var(--amber)"></i><i style="width:16px;height:16px;background:var(--rose)"></i></span></div>
-          <div class="day"><b>F</b><span class="sq"><i style="width:12px;height:12px;background:var(--cyan)"></i><i style="width:14px;height:14px;background:var(--amber)"></i><i style="width:16px;height:16px;background:var(--rose)"></i></span></div>
-          <div class="day"><b>S</b><span class="sq"><i style="width:12px;height:12px;background:var(--cyan)"></i><i style="width:14px;height:14px;background:var(--amber)"></i><i style="width:16px;height:16px;background:var(--rose)"></i></span></div>
-          <div class="day sun"><b>S</b><span class="sq"><i style="width:12px;height:12px;background:var(--cyan)"></i><i style="width:14px;height:14px;background:var(--amber)"></i><i style="width:16px;height:16px;background:var(--rose);box-shadow:0 0 10px var(--rose)"></i></span></div>
+          <div class="day"><b>T</b><span class="sq"><i style="width:12px;height:12px;background:var(--cyan)"></i><i style="width:14px;height:14px;background:var(--amber)"></i><i style="width:16px;height:16px;background:var(--rose)"></i></span><span class="w"><i></i></span></div>
+          <div class="day"><b>F</b><span class="sq"><i style="width:12px;height:12px;background:var(--cyan)"></i><i style="width:14px;height:14px;background:var(--amber)"></i><i style="width:16px;height:16px;background:var(--rose)"></i></span><span class="w"><i></i></span></div>
+          <div class="day sat"><b>S</b><span class="sq"><i style="width:12px;height:12px;background:var(--cyan)"></i><i style="width:14px;height:14px;background:var(--amber)"></i><i style="width:16px;height:16px;background:var(--rose)"></i></span><span class="w"><i></i></span><span class="tag">+ EXTRA</span></div>
+          <div class="day sun"><b>S</b><span class="sq"><i style="width:12px;height:12px;background:var(--cyan)"></i><i style="width:14px;height:14px;background:var(--amber)"></i><i style="width:16px;height:16px;background:var(--rose);box-shadow:0 0 10px var(--rose)"></i></span><span class="w"><i></i></span><span class="tag">GRAND</span></div>
         </div>
-        <div class="legend" aria-hidden="true">
+        <div class="legend reveal d3" aria-hidden="true">
           <span><i style="background:var(--cyan)"></i>Easy</span>
           <span><i style="background:var(--amber)"></i>Medium</span>
           <span><i style="background:var(--rose)"></i>Hard</span>
+          <span><i class="wi"></i>Walls</span>
+          <span style="color:var(--amber)">+ Extra: Plus</span>
         </div>
       </div>
-      <div class="media">
+      <div class="media reveal d1">
         <div class="phone"><img src="media/home.jpg" width="600" height="1300" loading="lazy"
              alt="The Lumilines home screen on Sunday: a week strip from Monday to Sunday, then today's Easy 6 by 6, Medium 7 by 7 and Sunday Grand 8 by 8 boards."></div>
       </div>
     </div>
   </section>
 
+  <section id="endless">
+    <div class="wrap">
+      <p class="kicker reveal" style="color:var(--violet)">Endless</p>
+      <h2 class="reveal">Done with today? There's always another board.</h2>
+      <p class="sub reveal d1">Endless deals fresh boards in three rooms. Three a day are free. With Plus there's no limit.</p>
+      <div class="rooms">
+        <div class="room card reveal">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <rect width="120" height="120" fill="#050506"/>
+            <path class="grid-lines" d="M0 24H120M0 48H120M0 72H120M0 96H120M24 0V120M48 0V120M72 0V120M96 0V120"/>
+            <path class="path glow" style="color:var(--cyan)" stroke="currentColor" d="M12 12H60V60H108"/>
+            <path class="path glow" style="color:var(--amber)" stroke="currentColor" d="M12 36V108H84"/>
+            <path class="path glow" style="color:var(--rose)" stroke="currentColor" d="M84 12H108V36"/>
+            <circle cx="12" cy="12" r="7" fill="var(--cyan)"/><circle cx="108" cy="60" r="7" fill="var(--cyan)"/>
+            <circle cx="12" cy="36" r="7" fill="var(--amber)"/><circle cx="84" cy="108" r="7" fill="var(--amber)"/>
+            <circle cx="84" cy="12" r="7" fill="var(--rose)"/><circle cx="108" cy="36" r="7" fill="var(--rose)"/>
+          </svg>
+          <h3>Classic <span class="badge free">Free</span></h3>
+          <p>The plain board, in Easy, Medium or Hard. Pick a size and play.</p>
+        </div>
+        <div class="room card reveal d1">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <rect width="120" height="120" fill="#050506"/>
+            <path class="grid-lines" d="M0 24H120M0 48H120M0 72H120M0 96H120M24 0V120M48 0V120M72 0V120M96 0V120"/>
+            <path class="path glow" style="color:var(--lime)" stroke="currentColor" d="M12 12V60H36V108"/>
+            <path class="path glow" style="color:var(--violet)" stroke="currentColor" d="M60 12H108V84H84"/>
+            <path class="wall" d="M48 26V46M72 96H96M26 72H46"/>
+            <circle cx="12" cy="12" r="7" fill="var(--lime)"/><circle cx="36" cy="108" r="7" fill="var(--lime)"/>
+            <circle cx="60" cy="12" r="7" fill="var(--violet)"/><circle cx="84" cy="84" r="7" fill="var(--violet)"/>
+          </svg>
+          <h3>Walls <span class="badge free">Free</span></h3>
+          <p>Boards with walls that block an edge or two. Opens after three days of play.</p>
+        </div>
+        <div class="room card expert reveal d2">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <rect width="120" height="120" fill="#050506"/>
+            <path class="grid-lines" d="M0 13.3H120M0 26.7H120M0 40H120M0 53.3H120M0 66.7H120M0 80H120M0 93.3H120M0 106.7H120M13.3 0V120M26.7 0V120M40 0V120M53.3 0V120M66.7 0V120M80 0V120M93.3 0V120M106.7 0V120"/>
+            <path class="path glow" style="color:var(--violet);stroke-width:7" stroke="currentColor" d="M6.7 6.7H46.7V33.3H86.7"/>
+            <path class="path glow" style="color:var(--cyan);stroke-width:7" stroke="currentColor" d="M6.7 33.3V86.7H60"/>
+            <path class="path glow" style="color:var(--orange);stroke-width:7" stroke="currentColor" d="M113.3 20V60H73.3V113.3"/>
+            <path class="path glow" style="color:var(--mint);stroke-width:7" stroke="currentColor" d="M20 113.3H46.7V100"/>
+            <path class="wall" d="M53.3 48V64M80 80H96M28 20V36M100 93H114"/>
+            <circle cx="6.7" cy="6.7" r="5" fill="var(--violet)"/><circle cx="86.7" cy="33.3" r="5" fill="var(--violet)"/>
+            <circle cx="6.7" cy="33.3" r="5" fill="var(--cyan)"/><circle cx="60" cy="86.7" r="5" fill="var(--cyan)"/>
+            <circle cx="113.3" cy="20" r="5" fill="var(--orange)"/><circle cx="73.3" cy="113.3" r="5" fill="var(--orange)"/>
+            <circle cx="20" cy="113.3" r="5" fill="var(--mint)"/><circle cx="46.7" cy="100" r="5" fill="var(--mint)"/>
+          </svg>
+          <h3>Expert <span class="badge plus">Plus</span></h3>
+          <p>9×9 boards, eight lines and walls. The biggest board in the game, carved in the background so it's ready when you are.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="plus">
+    <div class="wrap">
+      <p class="kicker reveal" style="color:var(--amber)">Lumilines Plus</p>
+      <h2 class="reveal">More board. More week. More you.</h2>
+      <p class="sub reveal d1">Plus doesn't change the daily puzzles. It opens the doors around them.</p>
+      <div class="plus-grid">
+        <div class="phone reveal d1"><img src="media/expert.jpg" width="598" height="1300" loading="lazy"
+             alt="The Expert room: a 9 by 9 Endless board with eight pairs of colored dots and seven white walls blocking cell edges."></div>
+        <div class="perks">
+          <div class="perk card reveal">
+            <span class="ico" style="background:rgba(155,123,255,.16);color:var(--violet)">▦</span>
+            <div><h3>The Expert room</h3><p>9×9 wall boards with eight lines, the largest in Lumilines. Two are always carved ahead of time, so the next one is waiting.</p></div>
+          </div>
+          <div class="perk card wide reveal d1">
+            <div class="head">
+              <span class="ico" style="background:rgba(166,240,74,.14);color:var(--lime)">◔</span>
+              <div><h3>Plus Insights</h3><p>Your best times for every difficulty, including the Sunday Grand. A twelve-week trend of your times. A calendar of every day you've played.</p></div>
+            </div>
+            <div class="insights" role="img" aria-label="Sample Plus Insights: record tiles for Easy, Medium and the Sunday Grand, a twelve-week trend chart of average times, and a calendar heatmap of played days.">
+              <svg viewBox="0 0 560 290" aria-hidden="true">
+                <defs>
+                  <linearGradient id="trendfill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#3fe0ff" stop-opacity=".28"/><stop offset="1" stop-color="#3fe0ff" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <g font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif">
+                  <rect x="0" y="0" width="176" height="70" rx="14" fill="#101014" stroke="#1e1e24"/>
+                  <text x="16" y="26" font-size="12" fill="#9a9aa3">Easy record</text>
+                  <text x="16" y="56" font-size="26" font-weight="700" fill="#3fe0ff">0:41</text>
+                  <rect x="192" y="0" width="176" height="70" rx="14" fill="#101014" stroke="#1e1e24"/>
+                  <text x="208" y="26" font-size="12" fill="#9a9aa3">Medium record</text>
+                  <text x="208" y="56" font-size="26" font-weight="700" fill="#ffc23d">1:58</text>
+                  <rect x="384" y="0" width="176" height="70" rx="14" fill="#101014" stroke="#1e1e24"/>
+                  <text x="400" y="26" font-size="12" fill="#9a9aa3">Sunday Grand</text>
+                  <text x="400" y="56" font-size="26" font-weight="700" fill="#ff4f8b">6:12</text>
+
+                  <text x="0" y="104" font-size="12" fill="#9a9aa3">Average time, last 12 weeks</text>
+                  <g stroke="#1e1e24"><path d="M0 128H340M0 160H340M0 192H340"/></g>
+                  <path d="M0 150L31 146L62 156L93 140L124 142L155 132L186 136L217 128L248 130L279 122L310 124L340 116V192H0Z" fill="url(#trendfill)"/>
+                  <path d="M0 150L31 146L62 156L93 140L124 142L155 132L186 136L217 128L248 130L279 122L310 124L340 116" fill="none" stroke="#3fe0ff" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" style="filter:drop-shadow(0 0 6px #3fe0ff)"/>
+                  <path d="M0 184L31 178L62 182L93 170L124 174L155 164L186 168L217 160L248 158L279 152L310 154L340 146" fill="none" stroke="#ffc23d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" style="filter:drop-shadow(0 0 6px #ffc23d)"/>
+                  <circle cx="340" cy="116" r="5" fill="#3fe0ff"/><circle cx="340" cy="146" r="5" fill="#ffc23d"/>
+
+                  <text x="372" y="104" font-size="12" fill="#9a9aa3">October</text>
+                  <g>
+                    <rect x="372" y="114" width="22" height="22" rx="5" fill="#a6f04a" opacity=".35"/><rect x="399" y="114" width="22" height="22" rx="5" fill="#a6f04a" opacity=".6"/><rect x="426" y="114" width="22" height="22" rx="5" fill="#a6f04a"/><rect x="453" y="114" width="22" height="22" rx="5" fill="#a6f04a" opacity=".6"/><rect x="480" y="114" width="22" height="22" rx="5" fill="#a6f04a"/><rect x="507" y="114" width="22" height="22" rx="5" fill="#a6f04a"/><rect x="534" y="114" width="22" height="22" rx="5" fill="#ff4f8b"/>
+                    <rect x="372" y="141" width="22" height="22" rx="5" fill="#a6f04a"/><rect x="399" y="141" width="22" height="22" rx="5" fill="#a6f04a" opacity=".6"/><rect x="426" y="141" width="22" height="22" rx="5" fill="#16161b"/><rect x="453" y="141" width="22" height="22" rx="5" fill="#a6f04a"/><rect x="480" y="141" width="22" height="22" rx="5" fill="#a6f04a"/><rect x="507" y="141" width="22" height="22" rx="5" fill="#a6f04a" opacity=".6"/><rect x="534" y="141" width="22" height="22" rx="5" fill="#ff4f8b"/>
+                    <rect x="372" y="168" width="22" height="22" rx="5" fill="#a6f04a" opacity=".35"/><rect x="399" y="168" width="22" height="22" rx="5" fill="#a6f04a"/><rect x="426" y="168" width="22" height="22" rx="5" fill="#a6f04a"/><rect x="453" y="168" width="22" height="22" rx="5" fill="#a6f04a"/><rect x="480" y="168" width="22" height="22" rx="5" fill="#16161b"/><rect x="507" y="168" width="22" height="22" rx="5" fill="#a6f04a"/><rect x="534" y="168" width="22" height="22" rx="5" fill="#ff4f8b" opacity=".5"/>
+                    <rect x="372" y="195" width="22" height="22" rx="5" fill="#a6f04a"/><rect x="399" y="195" width="22" height="22" rx="5" fill="#a6f04a"/><rect x="426" y="195" width="22" height="22" rx="5" fill="#a6f04a" opacity=".6"/><rect x="453" y="195" width="22" height="22" rx="5" fill="#16161b"/><rect x="480" y="195" width="22" height="22" rx="5" fill="#16161b"/><rect x="507" y="195" width="22" height="22" rx="5" fill="#16161b"/><rect x="534" y="195" width="22" height="22" rx="5" fill="#16161b"/>
+                  </g>
+                  <g fill="#9a9aa3" font-size="11"><text x="378" y="236">M</text><text x="406" y="236">T</text><text x="431" y="236">W</text><text x="460" y="236">T</text><text x="488" y="236">F</text><text x="514" y="236">S</text><text x="541" y="236">S</text></g>
+
+                  <circle cx="6" cy="268" r="5" fill="#3fe0ff"/><text x="18" y="272" font-size="12" fill="#9a9aa3">Easy</text>
+                  <circle cx="70" cy="268" r="5" fill="#ffc23d"/><text x="82" y="272" font-size="12" fill="#9a9aa3">Medium</text>
+                  <rect x="372" y="262" width="12" height="12" rx="3" fill="#a6f04a"/><text x="390" y="272" font-size="12" fill="#9a9aa3">Day done</text>
+                  <rect x="468" y="262" width="12" height="12" rx="3" fill="#ff4f8b"/><text x="486" y="272" font-size="12" fill="#9a9aa3">Grand</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+          <div class="perk card reveal">
+            <span class="ico" style="background:rgba(255,194,61,.16);color:var(--amber)">★</span>
+            <div><h3>The Saturday Extra</h3><p>One more wall board every Saturday, the same for everyone that week. A warm-up for Sunday.</p></div>
+          </div>
+          <div class="perk card reveal d1">
+            <span class="ico" style="background:rgba(63,224,255,.14);color:var(--cyan)">▤</span>
+            <div><h3>The Archive</h3><p>Every past daily puzzle, from launch day to yesterday. Missed a Grand? It's still there.</p></div>
+          </div>
+          <div class="perk card reveal d2">
+            <span class="ico" style="background:rgba(255,79,139,.14);color:var(--rose)">◐</span>
+            <div><h3>Color themes</h3><p>Lumen is the default. Plus adds Dawn, soft and pastel, and Nocturne, deep and saturated.</p>
+              <div class="swatches" aria-hidden="true">
+                <div class="swatch"><span><i style="background:#ff4f8b"></i><i style="background:#3fe0ff"></i><i style="background:#ffc23d"></i><i style="background:#a6f04a"></i><i style="background:#9b7bff"></i><i style="background:#ff7a45"></i><i style="background:#4c8dff"></i><i style="background:#3de6b0"></i></span>Lumen</div>
+                <div class="swatch"><span><i style="background:#FF9EC0"></i><i style="background:#9BEFFF"></i><i style="background:#FFDB8A"></i><i style="background:#CDF79A"></i><i style="background:#D3B5FF"></i><i style="background:#FFB38F"></i><i style="background:#9DBEFF"></i><i style="background:#9CF2D6"></i></span>Dawn</div>
+                <div class="swatch"><span><i style="background:#E0245E"></i><i style="background:#00B4D8"></i><i style="background:#F4A100"></i><i style="background:#7CB518"></i><i style="background:#7B5CFF"></i><i style="background:#F26419"></i><i style="background:#1272E7"></i><i style="background:#00A884"></i></span>Nocturne</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="details">
     <div class="wrap split">
-      <div class="media">
+      <div class="media reveal">
         <img class="board" src="media/grand.jpg" width="720" height="731" loading="lazy"
              alt="A solved 8 by 8 Sunday Grand board: eight glowing lines in orange, violet, lime, yellow, pink, mint, blue and cyan fill every cell. Each pair of dots carries its own symbol.">
       </div>
       <div>
-        <p class="kicker" style="color:var(--lime)">Made with care</p>
-        <h2>Calm to play. Easy to read.</h2>
-        <ul class="features">
-          <li><span class="ico" style="background:rgba(60,223,255,.14);color:var(--cyan)">◆</span><div><strong>A symbol on every dot</strong><span>Each pair has its own shape, so color is never the only clue.</span></div></li>
+        <p class="kicker reveal" style="color:var(--lime)">Made with care</p>
+        <h2 class="reveal">Calm to play. Easy to read.</h2>
+        <ul class="features reveal d1">
+          <li><span class="ico" style="background:rgba(63,224,255,.14);color:var(--cyan)">◆</span><div><strong>A symbol on every dot</strong><span>Each pair has its own shape, so color is never the only clue.</span></div></li>
           <li><span class="ico" style="background:rgba(255,194,61,.14);color:var(--amber)">↻</span><div><strong>Undo and restart</strong><span>Try an idea, take it back, try another.</span></div></li>
           <li><span class="ico" style="background:rgba(255,79,139,.14);color:var(--rose)">★</span><div><strong>Streaks and Game Center</strong><span>Keep your streak going and compare times on the daily leaderboards.</span></div></li>
-          <li><span class="ico" style="background:rgba(166,238,69,.14);color:var(--lime)">☁</span><div><strong>Synced with iCloud</strong><span>Your progress follows you to a new iPhone. No account to make.</span></div></li>
-          <li><span class="ico" style="background:rgba(165,134,255,.14);color:var(--violet)">↗</span><div><strong>Share your day</strong><span>Send your three times to friends without spoiling the boards.</span></div></li>
+          <li><span class="ico" style="background:rgba(166,240,74,.14);color:var(--lime)">☁</span><div><strong>Synced with iCloud</strong><span>Your progress follows you to a new iPhone. No account to make.</span></div></li>
+          <li><span class="ico" style="background:rgba(155,123,255,.14);color:var(--violet)">↗</span><div><strong>Share your day</strong><span>Send your three times to friends without spoiling the boards.</span></div></li>
         </ul>
       </div>
     </div>
@@ -319,28 +584,29 @@
 
   <section id="pricing">
     <div class="wrap">
-      <p class="kicker" style="color:var(--rose)">Fair by design</p>
-      <h2>The daily puzzles are free.</h2>
-      <p class="sub">No ads, no energy timers. Plus is there if you want more.</p>
+      <p class="kicker reveal" style="color:var(--rose)">Fair by design</p>
+      <h2 class="reveal">The daily puzzles are free.</h2>
+      <p class="sub reveal d1">No ads, no energy timers. Plus is there if you want more.</p>
       <div class="plans">
-        <div class="plan">
+        <div class="plan card reveal">
           <h3>Free</h3>
           <div class="price">$0</div>
           <ul>
             <li>Three new daily puzzles, every day</li>
-            <li>3 Endless puzzles a day</li>
+            <li>Walls from Thursday and the Sunday Grand</li>
+            <li>3 Endless puzzles a day, Classic and Walls rooms</li>
             <li>Streaks, stats and Game Center</li>
           </ul>
         </div>
-        <div class="plan plus">
-          <h3 style="color:var(--amber)">Lumilines Plus</h3>
+        <div class="plan plus reveal d1">
+          <h3 style="color:var(--amber)">Lumilines Plus <span class="badge plus">Free week</span></h3>
           <div class="price">$14.99 <small>a year</small></div>
           <div class="muted">or $29.99 once, yours for good</div>
           <ul>
             <li>Unlimited Endless puzzles</li>
+            <li>The Expert room: 9×9 wall boards</li>
             <li>The Archive: every past daily</li>
             <li>The Saturday Extra, one more wall board every week</li>
-            <li>The Expert room: 9×9 wall boards</li>
             <li>Plus Insights: your records, trends and daily rhythm</li>
             <li>Two extra color themes, Dawn and Nocturne</li>
           </ul>
@@ -352,8 +618,8 @@
 
   <section id="faq">
     <div class="wrap" style="max-width:820px">
-      <p class="kicker" style="color:var(--violet)">Questions</p>
-      <h2>Good to know</h2>
+      <p class="kicker reveal" style="color:var(--violet)">Questions</p>
+      <h2 class="reveal">Good to know</h2>
       <details>
         <summary>How do I join the beta?</summary>
         <p>Open the beta link on your iPhone. It takes you to TestFlight, Apple's free app for testing apps before release. Install TestFlight, tap Accept, then Install. Purchases in the beta use Apple's test system and never charge you.</p>
@@ -361,6 +627,14 @@
       <details>
         <summary>When is it coming to the App Store?</summary>
         <p>Soon. The beta is the last step before launch, and feedback from testers shapes the final version.</p>
+      </details>
+      <details>
+        <summary>What are walls?</summary>
+        <p>A wall sits between two cells and blocks the edge, so a line has to go around it. Walls appear on the Medium and Hard boards from Thursday to Sunday, in the Endless Walls room, and in the Expert room.</p>
+      </details>
+      <details>
+        <summary>What's the Expert room?</summary>
+        <p>A Plus room in Endless with 9×9 boards, eight lines and walls. The boards are carved in the background and kept ready, so you never wait on the main board.</p>
       </details>
       <details>
         <summary>Does it work on iPad?</summary>
@@ -379,9 +653,9 @@
 
   <section class="final">
     <div class="wrap">
-      <h2>Today's three puzzles are waiting.</h2>
-      <p class="sub">Join the beta and play this week's boards before anyone else.</p>
-      <a class="btn cta" href="https://testflight.apple.com/join/K3zaFQHC">Join the beta on TestFlight</a>
+      <h2 class="reveal">Today's three puzzles are waiting.</h2>
+      <p class="sub reveal d1">Join the beta and play this week's boards before anyone else.</p>
+      <a class="btn cta reveal d2" href="https://testflight.apple.com/join/K3zaFQHC">Join the beta on TestFlight</a>
     </div>
   </section>
 </main>
@@ -411,15 +685,15 @@
     if (!reduce.matches) { var p = v.play(); if (p && p.catch) p.catch(sync); }
     sync();
 
-    // Draw the step diagrams once they scroll into view.
-    var boards = document.querySelectorAll('.draw');
+    // Draw the step diagrams and reveal blocks once they scroll into view.
+    var targets = document.querySelectorAll('.draw, .reveal');
     if (reduce.matches || !('IntersectionObserver' in window)) {
-      boards.forEach(function (el) { el.classList.add('in'); });
+      targets.forEach(function (el) { el.classList.add('in'); });
     } else {
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-      }, { threshold: 0.5 });
-      boards.forEach(function (el) { io.observe(el); });
+      }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
+      targets.forEach(function (el) { io.observe(el); });
     }
   })();
 </script>
